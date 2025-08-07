@@ -4,23 +4,29 @@ import {
   type ColDef,
   type GridOptions,
 } from 'ag-grid-community'
-import {
-  ColumnMenuModule,
-  ColumnsToolPanelModule,
-  ContextMenuModule,
-  AllEnterpriseModule,
-} from 'ag-grid-enterprise'
-import { LicenseManager } from 'ag-grid-enterprise'
+
+// Uncomment ini jika anda menggunakan ag-grid-enterprise
+// import {
+//   ColumnMenuModule,
+//   ColumnsToolPanelModule,
+//   ContextMenuModule,
+//   AllEnterpriseModule,
+// } from 'ag-grid-enterprise'
+// import { LicenseManager } from 'ag-grid-enterprise'
 
 export function setupAgGrid() {
   ModuleRegistry.registerModules([
     AllCommunityModule,
-    AllEnterpriseModule,
-    ContextMenuModule,
-    ColumnsToolPanelModule,
-    ColumnMenuModule,
+
+    // Uncomment ini jika anda menggunakan ag-grid-enterprise
+    // AllEnterpriseModule,
+    // ContextMenuModule,
+    // ColumnsToolPanelModule,
+    // ColumnMenuModule,
   ])
-  LicenseManager.setLicenseKey(import.meta.env.VITE_AG_GRID_LICENSE_KEY)
+
+  // Uncomment ini jika anda menggunakan ag-grid-enterprise
+  // LicenseManager.setLicenseKey(import.meta.env.VITE_AG_GRID_LICENSE_KEY)
 }
 
 export function createColumnDefs(columns: Partial<ColDef>[]): ColDef[] {
@@ -56,4 +62,3 @@ export function getDefaultGridOptions(): Partial<GridOptions> {
     scrollbarWidth: 10,
   }
 }
-

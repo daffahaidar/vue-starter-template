@@ -14,7 +14,7 @@ const gridApi = ref<GridApi | null>(null)
 
 const myTheme = themeQuartz.withParams({
   browserColorScheme: 'light',
-  headerBackgroundColor: '#4A90E2',
+  headerBackgroundColor: 'var(--primary)',
   headerFontSize: 14,
   headerFontWeight: '600',
   headerTextColor: '#FFFFFF',

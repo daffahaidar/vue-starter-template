@@ -23,7 +23,7 @@ export const navbarData = [
     navMenu: [
       {
         title: 'Ag Grid Example',
-        url: '/transaction/inquiries',
+        url: '/ag-grid-example/products',
         icon: Table2,
       },
     ],

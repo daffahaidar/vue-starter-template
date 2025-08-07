@@ -8,7 +8,7 @@ const props = defineProps({
 
 <template>
   <router-link
-    :to="`/example/products/${props.params?.data?.product_id}`"
+    :to="`/ag-grid-example/products/${props.params?.data?.product_id}`"
     class="hover:text-primary font-medium hover:underline"
   >
     {{ props.params?.value }}

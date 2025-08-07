@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/vue-query' // Import useQuery dari Vue Query untuk melakukan query data ke server
 // import { api } from '@/libs/axios' // Import instance axios yang telah dikonfigurasi
 // import { endpoint } from '@/api' // Import endpoint yang berisi URL API
-import { dummyDataStatistics } from '../data/dummy'
+import { dummyProductData } from '../data/dummy'
 import type { AxiosResponse } from 'axios'
 
-export const useGetStatistics = () => {
+export const useGetProduct = () => {
   const {
     isPending, // Indikator apakah fetch data sedang dalam proses
     isError, // Indikator apakah terjadi error pada saat data fetching
@@ -19,7 +19,7 @@ export const useGetStatistics = () => {
         const response = new Promise<AxiosResponse>((resolve) => {
           setTimeout(() => {
             resolve({
-              data: dummyDataStatistics, // Menggunakan data dummy sebagai contoh
+              data: dummyProductData, // Menggunakan data dummy sebagai contoh
               status: 200,
               statusText: 'OK',
             } as AxiosResponse)
@@ -27,7 +27,6 @@ export const useGetStatistics = () => {
         })
 
         return (await response).data
-
         // Contoh jika ingin melakukan request ke backend
         // const response = await api.get(endpoint.exampleEndpoint)
         // return response?.data.data

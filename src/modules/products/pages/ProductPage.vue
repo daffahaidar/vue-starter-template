@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import AgTable from '@/components/ui/ag-grid/AgTable.vue'
-import { generateProductColumns } from './column'
+import { generateProductColumns } from '../tables/column'
 import type { GridReadyEvent } from 'ag-grid-community'
 import { computed } from 'vue'
-import { useGetProduct } from '../vue-query/queries'
+import { useGetProduct } from '../queries/product'
 
 const { data, isPending } = useGetProduct()
 
@@ -21,11 +21,16 @@ const handleGridReady = (event: GridReadyEvent) => {
 </script>
 
 <template>
-  <AgTable
-    :row-data="rowData"
-    :column-defs="columnData"
-    :loading="isPending"
-    :grid-options="customGridOptions"
-    @grid-ready="handleGridReady"
-  />
+  <sidebar-layout
+    pageTitle="Products"
+    :breadcrumb="[{ name: 'Ag Grid Example' }, { name: 'Products' }]"
+  >
+    <AgTable
+      :row-data="rowData"
+      :column-defs="columnData"
+      :loading="isPending"
+      :grid-options="customGridOptions"
+      @grid-ready="handleGridReady"
+    />
+  </sidebar-layout>
 </template>
