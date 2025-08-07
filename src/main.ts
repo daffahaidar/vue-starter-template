@@ -4,19 +4,20 @@ import { createPinia } from 'pinia'
 import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { setupAgGrid } from '@/libs/ag-grid'
 import App from '@/App.vue'
+import SidebarLayout from '@/components/layout/SidebarLayout.vue'
 import router from '@/router'
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false, // disable refetching on window focus
-      refetchOnMount: false, // disable refetching on component mount
-      staleTime: 5 * 60 * 1000, // 5 minutes - how long data stays fresh
-      gcTime: 15 * 60 * 1000, // 15 minutes - how long inactive data is kept
-      retry: 1, // number of retry attempts on failure
-      retryDelay: 3000, // 3 seconds between retry attempts
-      refetchOnReconnect: true,
-      structuralSharing: true, // enable structural sharing between query results
+      refetchOnWindowFocus: false, // refetch ketika halaman dibuka
+      refetchOnMount: false, // refetch ketika component dimount
+      staleTime: 5 * 60 * 1000, // 5 minutes - Berapa lama data dianggap fresh
+      gcTime: 15 * 60 * 1000, // 15 minutes - Waktu untuk menghapus data yang tidak lagi digunakan
+      retry: 1, // jumlah percobaan ulang jika terjadi error
+      retryDelay: 3000, // 3 seconds - jeda antara percobaan ulang
+      refetchOnReconnect: true, // refetch ketika koneksi internet terhubung kembali
+      structuralSharing: true, // menggunakan struktur data yang sama untuk mengurangi penggunaan memori
     },
   },
 })
@@ -26,5 +27,6 @@ setupAgGrid()
 app.use(createPinia())
 app.use(VueQueryPlugin, { queryClient, enableDevtoolsV6Plugin: true })
 app.use(router)
+app.component('sidebar-layout', SidebarLayout)
 
 app.mount('#app')

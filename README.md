@@ -1,45 +1,36 @@
-# vue-starter-template
+# 🌟 Vue Starter Template
 
-This template should help get you started developing with Vue 3 in Vite.
+Starter template untuk project Vue 3 dengan Composition API (`<script setup>`) yang sudah dikonfigurasi dengan struktur yang clean dan scalable. Cocok untuk dijadikan basis pengembangan aplikasi Vue 3 modern.
 
-## Recommended IDE Setup
+## 🚀 Features
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- ⚡️ Vite untuk build cepat
+- 🔥 Vue 3 + `<script setup>`
+- 🎨 Tailwind CSS yang terintegrasi dengan Shadcn/vue
+- 🧩 Modular folder structure
+- 🧪 Siap untuk ditambahkan testing, state management, dan fitur lainnya
+- 📊 Ag Grid
 
-## Type Support for `.vue` Imports in TS
+---
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## 📦 Instalasi
 
-## Customize configuration
+```bash
+# 1. Clone repository
+git clone https://github.com/daffahaidar/vue-starter-template.git
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+# 2. Masuk ke folder project
+cd vue-starter-template
 
-## Project Setup
-
-```sh
+# 3. Install dependencies
 npm install
-```
 
-### Compile and Hot-Reload for Development
-
-```sh
+# 4. Jalankan development server
 npm run dev
-```
 
-### Type-Check, Compile and Minify for Production
-
-```sh
+# Untuk build production
 npm run build
-```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
+# Untuk Preview build
+npm run preview
 ```
