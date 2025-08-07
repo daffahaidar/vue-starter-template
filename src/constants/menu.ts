@@ -1,44 +1,30 @@
-import { BanknoteArrowDown, CreditCard, Database, HandCoins, MonitorCheck } from 'lucide-vue-next'
+import { ChartArea, Table2 } from 'lucide-vue-next'
+// semua icon bisa didapatkan dari https://lucide.dev/
 
 export const navbarData = [
   {
-    group: 'Main Menu',
+    group: 'Sub Menu Template',
     navMenu: [
       {
-        title: 'Home',
-        url: '/',
-        icon: Database,
+        title: 'Chart Example',
+        url: '/chart',
+        icon: ChartArea,
         items: [
           {
-            title: 'Dashboard',
-            url: '/',
+            title: 'Bar Chart',
+            url: '/chart/bar',
           },
         ],
       },
     ],
   },
   {
-    group: 'Boilerplate',
+    group: 'Main Menu Template',
     navMenu: [
       {
-        title: 'Penagihan',
+        title: 'Ag Grid Example',
         url: '/transaction/inquiries',
-        icon: HandCoins,
-      },
-      {
-        title: 'Pembayaran',
-        url: '/transaction/payments',
-        icon: BanknoteArrowDown,
-      },
-      {
-        title: 'Virtual Account',
-        url: '/transaction/virtual-accounts',
-        icon: CreditCard,
-      },
-      {
-        title: 'Cek Status Pembayaran',
-        url: '/transaction/check-status',
-        icon: MonitorCheck,
+        icon: Table2,
       },
     ],
   },

@@ -1,22 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { toRupiah } from '@/utils/currency'
-import { BarChart } from '@/components/ui/chart-bar'
+import { toRupiah } from '@/utils/currency' // Import utility function untuk format mata uang
+import { BarChart } from '@/components/ui/chart-bar' // Import komponen chart bar
+import { useGetStatistics } from '../queries/statistics' // Import query untuk mendapatkan data statistik
 
-const dummyData = ref([
-  { month: 'Jan', total: 5000000 },
-  { month: 'Feb', total: 7000000 },
-  { month: 'Mar', total: 6000000 },
-  { month: 'Apr', total: 8000000 },
-  { month: 'May', total: 9000000 },
-  { month: 'Jun', total: 10000000 },
-  { month: 'Jul', total: 11000000 },
-  { month: 'Aug', total: 12000000 },
-  { month: 'Sep', total: 13000000 },
-  { month: 'Oct', total: 14000000 },
-  { month: 'Nov', total: 15000000 },
-  { month: 'Dec', total: 16000000 },
-])
+const { data: statisticData } = useGetStatistics()
 </script>
 
 <template>
@@ -25,7 +12,7 @@ const dummyData = ref([
       <h1 class="text-xl font-bold">Statistik</h1>
       <BarChart
         index="month"
-        :data="dummyData"
+        :data="statisticData ?? []"
         :categories="['total']"
         :showGridLine="true"
         :colors="['var(--primary)']"
