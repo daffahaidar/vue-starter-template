@@ -14,12 +14,15 @@ import * as z from 'zod'
 import { useLogin } from '../mutations/login'
 import type { AxiosError } from 'axios'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
 
 const props = defineProps<{
   class?: HTMLAttributes['class']
 }>()
 
 const router = useRouter()
+
+const { login: saveCredentials } = useAuthStore()
 
 const loginSchema = toTypedSchema(
   z.object({
@@ -33,10 +36,14 @@ const form = useForm({
 })
 
 const { mutate: login, isPending: isLoadingLogin } = useLogin({
-  onSuccess: () => {
+  onSuccess: (response) => {
+    console.log('Login response:', response.data.email)
     toast.success('Login berhasil!')
+    saveCredentials({
+      email: response.data.email,
+    })
     // Redirect ke halaman dashboard atau halaman yang diinginkan
-    router.push('/chart/bar')
+    router.push('/ag-grid-example/products')
   },
 
   onError: (error: AxiosError) => {

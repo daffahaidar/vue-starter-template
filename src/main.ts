@@ -1,11 +1,11 @@
 import '@/styles/globals.css'
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { setupAgGrid } from '@/libs/ag-grid'
 import App from '@/App.vue'
 import SidebarLayout from '@/components/layout/SidebarLayout.vue'
 import router from '@/router'
+import { pinia } from '@/libs/pinia'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,7 +24,9 @@ const queryClient = new QueryClient({
 
 const app = createApp(App)
 setupAgGrid()
-app.use(createPinia())
+
+app.use(pinia)
+
 app.use(VueQueryPlugin, { queryClient, enableDevtoolsV6Plugin: true })
 app.use(router)
 app.component('sidebar-layout', SidebarLayout)

@@ -33,6 +33,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useGetSession } from '@/modules/login/composable/session'
+import { useAuthStore } from '@/modules/login/stores/auth'
+import { useRouter } from 'vue-router'
 
 interface BreadcrumbItem {
   name: string
@@ -60,6 +63,15 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
 })
+const router = useRouter()
+const { logout } = useAuthStore()
+const { name } = useGetSession()
+
+const handleLogout = () => {
+  logout()
+  // Redirect to login page or perform any other action after logout
+  router.push('/')
+}
 </script>
 
 <template>
@@ -103,7 +115,11 @@ onUnmounted(() => {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger as-child>
-                <Button variant="outline" class="rounded-full pl-0.5">
+                <Button
+                  variant="outline"
+                  class="rounded-full pl-0.5"
+                  :class="!name ? 'pr-0.5' : null"
+                >
                   <Avatar>
                     <AvatarImage
                       src="https://avatars.githubusercontent.com/u/56962807?v=4"
@@ -111,7 +127,7 @@ onUnmounted(() => {
                     />
                     <AvatarFallback>D</AvatarFallback>
                   </Avatar>
-                  Daffa Haidar Nabil Zufar
+                  {{ name }}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent class="w-56">
@@ -175,7 +191,7 @@ onUnmounted(() => {
                   <span>API</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem @click="handleLogout">
                   <span>Log out</span>
                   <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                 </DropdownMenuItem>
