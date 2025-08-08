@@ -4,8 +4,11 @@ import { generateProductColumns } from '../tables/column'
 import type { GridReadyEvent } from 'ag-grid-community'
 import { computed } from 'vue'
 import { useGetProduct } from '../queries/product'
+import { useGetSession } from '@/modules/login/composable/session'
 
-const { data, isPending } = useGetProduct()
+const { accessToken } = useGetSession()
+
+const { data, isPending } = useGetProduct(accessToken.value)
 
 const columnData = computed(() => generateProductColumns())
 const rowData = computed<unknown[]>(() => (Array.isArray(data.value) ? data.value : []))

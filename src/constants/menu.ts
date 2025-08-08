@@ -9,10 +9,12 @@ export const navbarData = [
         title: 'Chart Example',
         url: '/chart',
         icon: ChartArea,
+        permission: ['User'],
         items: [
           {
             title: 'Bar Chart',
             url: '/chart/bar',
+            permission: ['User', 'Admin'], // Contoh penggunaan permission
           },
         ],
       },
@@ -25,6 +27,7 @@ export const navbarData = [
         title: 'Ag Grid Example',
         url: '/ag-grid-example/products',
         icon: Table2,
+        permission: ['User'], // Contoh penggunaan permission
       },
     ],
   },

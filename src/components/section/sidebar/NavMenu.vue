@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/sidebar'
 import { RouterLink } from 'vue-router'
 import { useRoute } from 'vue-router'
+import { useGetSession } from '@/modules/login/composable/session'
 
 defineProps<{
   group: string
@@ -21,7 +22,9 @@ defineProps<{
     url: string
     icon?: LucideIcon
     isActive?: boolean
+    permission: string[] // Array of permissions required to view this item
     items?: {
+      permission?: string[] // Optional permissions for sub-items
       title: string
       url: string
     }[]
@@ -30,6 +33,7 @@ defineProps<{
 
 const route = useRoute()
 const pathName = route.path
+const { role } = useGetSession()
 </script>
 
 <template>
@@ -78,6 +82,7 @@ const pathName = route.path
 
         <SidebarMenuItem v-else>
           <SidebarMenuButton
+            v-if="item.permission && item.permission.includes(role)"
             as-child
             :tooltip="item.title"
             class="hover:bg-primary shadow hover:text-white"

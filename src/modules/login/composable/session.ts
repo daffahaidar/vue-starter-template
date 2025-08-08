@@ -8,6 +8,7 @@ export const useGetSession = () => {
   const accessToken = computed(() => auth.accessToken)
   const accessTokenExpireIn = computed(() => auth.accessTokenExpireIn)
   const refreshToken = computed(() => auth.refreshToken)
+  const role = computed(() => auth.role)
 
   return {
     isLoggedIn: auth.isLoggedIn,
@@ -16,5 +17,6 @@ export const useGetSession = () => {
     accessToken,
     accessTokenExpireIn,
     refreshToken,
+    role,
   }
 }

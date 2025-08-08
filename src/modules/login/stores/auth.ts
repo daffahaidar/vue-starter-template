@@ -8,6 +8,7 @@ export const useAuthStore = defineStore('auth', {
     accessToken: '',
     accessTokenExpireIn: 0,
     refreshToken: '',
+    role: '',
   }),
   actions: {
     login(payload: {
@@ -16,6 +17,7 @@ export const useAuthStore = defineStore('auth', {
       accessToken?: string
       accessTokenExpireIn?: number
       refreshToken?: string
+      role?: string
     }) {
       this.isLoggedIn = true
       this.name = payload.name || ''
@@ -23,6 +25,7 @@ export const useAuthStore = defineStore('auth', {
       this.accessToken = payload.accessToken || ''
       this.accessTokenExpireIn = payload.accessTokenExpireIn || 0
       this.refreshToken = payload.refreshToken || ''
+      this.role = payload.role || ''
     },
     logout() {
       this.isLoggedIn = false
@@ -31,6 +34,7 @@ export const useAuthStore = defineStore('auth', {
       this.accessToken = ''
       this.accessTokenExpireIn = 0
       this.refreshToken = ''
+      this.role = ''
     },
     updateSession(payload: {
       name?: string
@@ -38,12 +42,14 @@ export const useAuthStore = defineStore('auth', {
       accessToken?: string
       accessTokenExpireIn?: number
       refreshToken?: string
+      role?: string
     }) {
       if (payload.name) this.name = payload.name
       if (payload.email) this.email = payload.email
       if (payload.accessToken) this.accessToken = payload.accessToken
       if (payload.accessTokenExpireIn) this.accessTokenExpireIn = payload.accessTokenExpireIn
       if (payload.refreshToken) this.refreshToken = payload.refreshToken
+      if (payload.role) this.role = payload.role
     },
   },
   persist: {

@@ -12,7 +12,7 @@ import { toast } from 'vue-sonner'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 import { useLogin } from '../mutations/login'
-import type { AxiosError } from 'axios'
+
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 
@@ -37,17 +37,25 @@ const form = useForm({
 
 const { mutate: login, isPending: isLoadingLogin } = useLogin({
   onSuccess: (response) => {
-    console.log('Login response:', response.data.email)
-    toast.success('Login berhasil!')
+    console.log()
+    // console.log('Login response:', response.data.email)
+
     saveCredentials({
-      email: response.data.email,
+      email: response?.data?.data?.email,
+      name: response?.data?.data?.name,
+      accessToken: response?.data?.data?.accessToken,
+      refreshToken: response?.data?.data?.refreshToken,
+      accessTokenExpireIn: response?.data?.data?.tokenExpiresIn,
+      role: response.data.data.role,
     })
-    // Redirect ke halaman dashboard atau halaman yang diinginkan
+    toast.success('Login berhasil!')
+    // // Redirect ke halaman dashboard atau halaman yang diinginkan
     router.push('/ag-grid-example/products')
   },
 
-  onError: (error: AxiosError) => {
-    toast.error(error.message)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onError: (error: any) => {
+    toast.error(error?.response?.data?.message)
   },
 })
 
