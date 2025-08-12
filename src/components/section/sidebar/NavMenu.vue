@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronRight, type LucideIcon } from 'lucide-vue-next'
+import { ChevronRight } from 'lucide-vue-next'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
   SidebarGroup,
@@ -11,29 +11,27 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar'
-import { RouterLink } from 'vue-router'
 import { useRoute } from 'vue-router'
 import { useGetSession } from '@/modules/login/composable/session'
+import type { NavMenuItem } from '@/types/navigation'
 
 defineProps<{
   group: string
-  items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
-    permission: string[] // Array of permissions required to view this item
-    items?: {
-      permission?: string[] // Optional permissions for sub-items
-      title: string
-      url: string
-    }[]
-  }[]
+  items: NavMenuItem[]
 }>()
 
 const route = useRoute()
 const pathName = route.path
 const { role } = useGetSession()
+
+const hasPermission = (permissions: string[]): boolean => {
+  return permissions.includes(role.value)
+}
+
+const hasSubItemPermission = (items?: NavMenuItem['items']): boolean => {
+  if (!items) return false
+  return items.some((subItem) => !subItem.permission || hasPermission(subItem.permission))
+}
 </script>
 
 <template>
@@ -43,10 +41,15 @@ const { role } = useGetSession()
     </SidebarGroupLabel>
     <SidebarMenu v-if="items" class="space-y-1.5">
       <template v-for="item in items" :key="item.title">
+        <!-- Item dengan sub-menu -->
         <Collapsible
-          v-if="item.items"
+          v-if="item.items && hasPermission(item.permission) && hasSubItemPermission(item.items)"
           as-child
-          :default-open="pathName.startsWith(item.url)"
+          :default-open="
+            item.url
+              ? pathName.startsWith(item.url)
+              : item.items.some((subItem) => pathName.startsWith(subItem.url))
+          "
           class="group/collapsible"
         >
           <SidebarMenuItem>
@@ -64,34 +67,38 @@ const { role } = useGetSession()
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SidebarMenuSub>
-                <SidebarMenuSubItem v-for="subItem in item.items" :key="subItem.title">
-                  <SidebarMenuSubButton
-                    as-child
-                    class="hover:bg-primary hover:text-white"
-                    :class="pathName.startsWith(subItem.url) && 'bg-primary text-white'"
+                <template v-for="subItem in item.items" :key="subItem.title">
+                  <SidebarMenuSubItem
+                    v-if="!subItem.permission || hasPermission(subItem.permission)"
                   >
-                    <RouterLink :to="subItem.url">
-                      <span>{{ subItem.title }}</span>
-                    </RouterLink>
-                  </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
+                    <SidebarMenuSubButton
+                      as-child
+                      class="hover:bg-primary hover:text-white"
+                      :class="pathName.startsWith(subItem.url) && 'bg-primary text-white'"
+                    >
+                      <router-link :to="subItem.url">
+                        <span>{{ subItem.title }}</span>
+                      </router-link>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                </template>
               </SidebarMenuSub>
             </CollapsibleContent>
           </SidebarMenuItem>
         </Collapsible>
 
-        <SidebarMenuItem v-else>
+        <!-- Item tanpa sub-menu -->
+        <SidebarMenuItem v-else-if="!item.items && item.url && hasPermission(item.permission)">
           <SidebarMenuButton
-            v-if="item.permission && item.permission.includes(role)"
             as-child
             :tooltip="item.title"
             class="hover:bg-primary shadow hover:text-white"
             :class="pathName.startsWith(item.url) && 'bg-primary text-white'"
           >
-            <RouterLink :to="item.url" class="flex w-full items-center gap-2">
+            <router-link :to="item.url" class="flex w-full items-center gap-2">
               <component :is="item.icon" v-if="item.icon" />
               <span>{{ item.title }}</span>
-            </RouterLink>
+            </router-link>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </template>

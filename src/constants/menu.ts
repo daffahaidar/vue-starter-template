@@ -1,20 +1,19 @@
 import { ChartArea, Table2 } from 'lucide-vue-next'
-// semua icon bisa didapatkan dari https://lucide.dev/
+import type { NavGroup } from '@/types/navigation'
 
-export const navbarData = [
+export const navbarData: NavGroup[] = [
   {
     group: 'Sub Menu Template',
     navMenu: [
       {
         title: 'Chart Example',
-        url: '/chart',
         icon: ChartArea,
-        permission: ['User'],
+        permission: ['User', 'Admin'],
         items: [
           {
             title: 'Bar Chart',
             url: '/chart/bar',
-            permission: ['User', 'Admin'], // Contoh penggunaan permission
+            permission: ['User', 'Admin'],
           },
         ],
       },
@@ -27,7 +26,7 @@ export const navbarData = [
         title: 'Ag Grid Example',
         url: '/ag-grid-example/products',
         icon: Table2,
-        permission: ['User'], // Contoh penggunaan permission
+        permission: ['User', 'Admin'],
       },
     ],
   },

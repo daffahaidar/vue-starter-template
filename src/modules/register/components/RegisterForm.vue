@@ -11,11 +11,18 @@ import { toast } from 'vue-sonner'
 
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
-import { useLogin } from '../mutations/login'
-
+import { useRegister } from '../mutations/register'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
 import type { AxiosError } from 'axios'
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 const props = defineProps<{
   class?: HTMLAttributes['class']
@@ -23,31 +30,27 @@ const props = defineProps<{
 
 const router = useRouter()
 
-const { login: saveCredentials } = useAuthStore()
-
-const loginSchema = toTypedSchema(
+const registerSchema = toTypedSchema(
   z.object({
-    email: z.string({ required_error: 'Email harus diisi!' }),
-    password: z.string({ required_error: 'Password harus diisi!' }),
+    name: z.string({ required_error: 'Nama harus diisi!' }).min(1, 'Nama wajib diisi'),
+    email: z.string({ required_error: 'Email harus diisi!' }).email('Email tidak valid'),
+    password: z
+      .string({ required_error: 'Masukkan password anda!' })
+      .min(6, 'Password minimal 6 karakter'),
+    role: z.enum(['Admin', 'User'], {
+      message: "Role harus 'Admin' atau 'User'",
+    }),
   }),
 )
 
 const form = useForm({
-  validationSchema: loginSchema,
+  validationSchema: registerSchema,
 })
 
-const { mutate: login, isPending: isLoadingLogin } = useLogin({
-  onSuccess: (response) => {
-    saveCredentials({
-      email: response?.data?.data?.email,
-      name: response?.data?.data?.name,
-      accessToken: response?.data?.data?.accessToken,
-      refreshToken: response?.data?.data?.refreshToken,
-      accessTokenExpireIn: response?.data?.data?.tokenExpiresIn,
-      role: response.data.data.role,
-    })
-    toast.success('Login berhasil!')
-    router.push('/ag-grid-example/products')
+const { mutate: register, isPending: isLoadingRegister } = useRegister({
+  onSuccess: () => {
+    toast.success('Registrasi berhasil!')
+    router.push('/auth/login')
   },
 
   onError: (error: AxiosError) => {
@@ -56,15 +59,17 @@ const { mutate: login, isPending: isLoadingLogin } = useLogin({
       typeof error.response.data === 'object' &&
       'message' in error.response.data
         ? (error.response.data as { message: string }).message
-        : 'Terjadi kesalahan saat login.'
+        : 'Terjadi kesalahan saat registrasi.'
     toast.error(message)
   },
 })
 
 const onSubmit = form.handleSubmit((values) => {
-  login({
+  register({
     email: values.email,
     password: values.password,
+    name: values.name,
+    role: values.role,
   })
 })
 </script>
@@ -73,7 +78,7 @@ const onSubmit = form.handleSubmit((values) => {
   <div :class="cn('flex flex-col gap-6', props.class)">
     <Card class="overflow-hidden p-0">
       <CardContent class="grid p-0 md:grid-cols-2">
-        <form @submit="onSubmit" class="p-6 md:p-8">
+        <form @submit="onSubmit" class="p-6 md:p-8 overflow-y-auto h-[500px]">
           <div class="flex flex-col gap-6">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -101,8 +106,19 @@ const onSubmit = form.handleSubmit((values) => {
               />
             </svg>
             <div class="flex flex-col items-center text-center">
-              <h1 class="text-2xl font-bold">Login Company</h1>
-              <p class="text-muted-foreground text-balance">Silakan masuk untuk melanjutkan</p>
+              <h1 class="text-2xl font-bold">Register Company</h1>
+              <p class="text-muted-foreground text-balance">Silakan daftar untuk melanjutkan</p>
+            </div>
+            <div class="grid gap-3">
+              <FormField v-slot="{ componentField }" name="name">
+                <FormItem>
+                  <FormLabel> Name </FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="Masukkan nama Anda" v-bind="componentField" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
             </div>
             <div class="grid gap-3">
               <FormField v-slot="{ componentField }" name="email">
@@ -132,23 +148,46 @@ const onSubmit = form.handleSubmit((values) => {
                 </FormItem>
               </FormField>
             </div>
+            <div class="grid gap-3">
+              <FormField v-slot="{ componentField }" name="role">
+                <FormItem>
+                  <FormLabel>Role</FormLabel>
+
+                  <Select v-bind="componentField">
+                    <FormControl>
+                      <SelectTrigger class="w-full">
+                        <SelectValue placeholder="Pilih Role" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="Admin"> Admin </SelectItem>
+                        <SelectItem value="User"> User </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </div>
+
             <Button
               type="submit"
               class="w-full"
-              :loading="isLoadingLogin"
-              :disabled="isLoadingLogin"
-            >
-              Login
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              @click="() => router.push('/auth/register')"
-              class="w-full"
-              :loading="isLoadingLogin"
-              :disabled="isLoadingLogin"
+              :loading="isLoadingRegister"
+              :disabled="isLoadingRegister"
             >
               Register
+            </Button>
+            <Button
+              @click="() => router.push('/auth/login')"
+              type="button"
+              class="w-full"
+              variant="outline"
+              :loading="isLoadingRegister"
+              :disabled="isLoadingRegister"
+            >
+              Login
             </Button>
 
             <div class="text-muted-foreground text-center text-sm">
@@ -159,7 +198,7 @@ const onSubmit = form.handleSubmit((values) => {
         <div class="bg-muted relative hidden md:block">
           <img
             :src="BlankImage"
-            alt="Login Banner"
+            alt="Register Banner"
             class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
           />
         </div>
