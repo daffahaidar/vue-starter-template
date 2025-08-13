@@ -2,15 +2,14 @@
 import AgTable from '@/components/ui/ag-grid/AgTable.vue'
 import { generateProductColumns } from '../tables/column'
 import type { GridReadyEvent } from 'ag-grid-community'
-import { computed, ref, type Ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useGetProduct } from '../queries/product'
 import { useGetSession } from '@/modules/login/composable/session'
 import { CalendarIcon } from 'lucide-vue-next'
-import { DateFormatter, getLocalTimeZone, today } from '@internationalized/date'
+import { DateFormatter, getLocalTimeZone } from '@internationalized/date'
 import Label from '@/components/ui/label/Label.vue'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { RangeCalendar } from '@/components/ui/range-calendar'
-import type { DateRange } from 'reka-ui'
+import type { DateValue } from 'reka-ui'
 import { cn } from '@/libs/shadcn'
 import Button from '@/components/ui/button/Button.vue'
 import {
@@ -23,11 +22,10 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useGetCategories } from '../queries/category'
+import { Calendar } from '@/components/ui/calendar'
 
-const dateValue = ref({
-  start: undefined,
-  end: undefined,
-}) as Ref<DateRange>
+const startDate = ref<DateValue>()
+const endDate = ref<DateValue>()
 
 const { accessToken } = useGetSession()
 
@@ -36,8 +34,8 @@ const selectedCategory = ref<string | null>(null)
 const { data, isPending } = useGetProduct(
   accessToken.value,
   computed(() => selectedCategory.value),
-  computed(() => (dateValue.value.start ? dateValue.value.start : null)),
-  computed(() => (dateValue.value.end ? dateValue.value.end : null)),
+  computed(() => (startDate.value ? startDate.value : null)),
+  computed(() => (endDate.value ? endDate.value : null)),
 )
 
 const columnData = computed(() => generateProductColumns())
@@ -113,43 +111,47 @@ const df = new DateFormatter('id-ID', { dateStyle: 'medium' })
       </div>
       <div class="grid gap-2">
         <Label class="text-sm font-medium"> Rentang Tanggal Masuk </Label>
-        <Popover>
-          <PopoverTrigger as-child>
-            <Button
-              variant="outline"
-              :class="
-                cn(
-                  'w-[280px] justify-start text-left font-medium',
-                  !dateValue && 'text-muted-foreground',
-                )
-              "
-            >
-              <CalendarIcon class="mr-2 h-4 w-4" />
-              <template v-if="dateValue.start">
-                <template v-if="dateValue.end">
-                  {{ df.format(dateValue.start.toDate(getLocalTimeZone())) }} -
-                  {{ df.format(dateValue.end.toDate(getLocalTimeZone())) }}
-                </template>
-                <template v-else>
-                  {{ df.format(dateValue.start.toDate(getLocalTimeZone())) }}
-                </template>
-              </template>
-              <template v-else> Pilih rentang tanggal </template>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent class="w-auto p-0">
-            <RangeCalendar
-              v-model="dateValue"
-              initial-focus
-              :number-of-months="1"
-              :maximum-days="31"
-              :maximum-value="today(getLocalTimeZone())"
-              :locale="'id'"
-              weekdayFormat="short"
-              @update:start-value="(startDate) => (dateValue.start = startDate)"
-            />
-          </PopoverContent>
-        </Popover>
+        <div class="flex gap-2">
+          <Popover>
+            <PopoverTrigger as-child>
+              <Button
+                variant="outline"
+                :class="
+                  cn(
+                    'w-[280px] justify-start text-left font-normal',
+                    !startDate && 'text-muted-foreground',
+                  )
+                "
+              >
+                <CalendarIcon class="mr-2 h-4 w-4" />
+                {{ startDate ? df.format(startDate.toDate(getLocalTimeZone())) : 'Pilih Tanggal' }}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent class="w-auto p-0">
+              <Calendar v-model="startDate" initial-focus />
+            </PopoverContent>
+          </Popover>
+
+          <Popover>
+            <PopoverTrigger as-child>
+              <Button
+                variant="outline"
+                :class="
+                  cn(
+                    'w-[280px] justify-start text-left font-normal',
+                    !endDate && 'text-muted-foreground',
+                  )
+                "
+              >
+                <CalendarIcon class="mr-2 h-4 w-4" />
+                {{ endDate ? df.format(endDate.toDate(getLocalTimeZone())) : 'Pilih Tanggal' }}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent class="w-auto p-0">
+              <Calendar v-model="endDate" initial-focus />
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
     </div>
     <AgTable
