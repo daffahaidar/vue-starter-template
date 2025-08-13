@@ -39,12 +39,43 @@ const { data, isPending } = useGetProduct(
   computed(() => (dateValue.value.start ? dateValue.value.start : null)),
   computed(() => (dateValue.value.end ? dateValue.value.end : null)),
 )
+
 const columnData = computed(() => generateProductColumns())
 const rowData = computed<unknown[]>(() => (Array.isArray(data.value) ? data.value : []))
+
+// Hitung total stock quantity
+const totalStock = computed(() => {
+  if (!Array.isArray(data.value)) return 0
+  return data.value.reduce(
+    (
+      total: number,
+      item: {
+        stock_quantity?: number
+      },
+    ) => {
+      return total + (item.stock_quantity || 0)
+    },
+    0,
+  )
+})
+
+// Buat pinned bottom row data untuk menampilkan total
+const pinnedBottomRowData = computed(() => [
+  {
+    name: 'TOTAL',
+    description: '',
+    arrival_date: '',
+    price: '',
+    'category.name': '',
+    stock_quantity: totalStock.value,
+  },
+])
+
 const customGridOptions = {
   rowHeight: 40,
   headerHeight: 50,
 }
+
 const { data: categoryData } = useGetCategories()
 
 const handleGridReady = (event: GridReadyEvent) => {
@@ -127,6 +158,7 @@ const df = new DateFormatter('id-ID', { dateStyle: 'medium' })
       :column-defs="columnData"
       :loading="isPending"
       :grid-options="customGridOptions"
+      :pinned-bottom-row-data="pinnedBottomRowData"
       @grid-ready="handleGridReady"
     />
   </sidebar-layout>

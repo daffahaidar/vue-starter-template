@@ -35,6 +35,7 @@ interface DataGridProps {
   paginationPageSize?: number
   notFoundDataMessage?: string
   loadingText?: string
+  pinnedBottomRowData?: unknown[]
 }
 
 const props = withDefaults(defineProps<DataGridProps>(), {
@@ -47,6 +48,7 @@ const props = withDefaults(defineProps<DataGridProps>(), {
   theme: 'ag-theme-quartz',
   notFoundDataMessage: 'Data belum tersedia.',
   loadingText: 'Memuat data...',
+  pinnedBottomRowData: () => [],
 })
 
 const searchSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>`
@@ -64,8 +66,7 @@ const finalGridOptions = computed(() => ({
   icons: {
     filter: searchSvg,
   },
-
-  // sticky header
+  pinnedBottomRowData: props.pinnedBottomRowData,
   ...props.gridOptions,
 }))
 
@@ -143,6 +144,7 @@ onUnmounted(() => {
     :style="{ height: props.height }"
     :overlay-loading-template="overlayLoadingTemplate"
     :overlay-no-rows-template="overlayNoRowsTemplate"
+    :pinned-bottom-row-data="finalGridOptions.pinnedBottomRowData"
     @grid-ready="onGridReady"
     @cell-clicked="onCellClicked"
   />
